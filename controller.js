@@ -2214,7 +2214,7 @@ var breedingController=angular.module('breedingControllers', []).controller('bre
 		}
 
 		creature.maxfoodrate=creaturedata.basefoodrate*creaturedata.babyfoodrate*creaturedata.extrababyfoodrate*$scope.settings.consumptionspeed;
-		creature.minfoodrate=$scope.settings.baseminfoodrate*creaturedata.babyfoodrate*creaturedata.extrababyfoodrate*$scope.settings.consumptionspeed;
+		creature.minfoodrate=creaturedata.basefoodrate*$scope.settings.consumptionspeed;
 		creature.foodratedecay=(creature.maxfoodrate-creature.minfoodrate)/creature.maturationtime;
 		creature.foodratedecay=(creature.maxfoodrate-creature.minfoodrate)/creature.maturationtime;
 
@@ -2546,7 +2546,7 @@ var breedingController=angular.module('breedingControllers', []).controller('bre
 				}
 				newcreature.maturationtimecomplete=newcreature.maturationtime*newcreature.maturation;
 				newcreature.maxfoodrate=$scope.creatures[name].basefoodrate*$scope.creatures[name].babyfoodrate*$scope.creatures[name].extrababyfoodrate*$scope.settings.consumptionspeed;
-				newcreature.minfoodrate=$scope.settings.baseminfoodrate*$scope.creatures[name].babyfoodrate*$scope.creatures[name].extrababyfoodrate*$scope.settings.consumptionspeed;
+				newcreature.minfoodrate=$scope.creatures[name].basefoodrate*$scope.settings.consumptionspeed;
 				newcreature.foodratedecay=(newcreature.maxfoodrate-newcreature.minfoodrate)/newcreature.maturationtime;
 				newcreature.foodrate=newcreature.maxfoodrate-newcreature.foodratedecay*newcreature.maturation*newcreature.maturationtime;
 				newcreature.hunger=0;
