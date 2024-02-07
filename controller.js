@@ -992,6 +992,7 @@ var breedingController=angular.module('breedingControllers', []).controller('bre
 			basefoodrate: 0.002314,
 			babyfoodrate: 45.0,
 			extrababyfoodrate: 20.0,
+			extraadultfoodrate: 3.0,
 			agespeed: 0.000003,
 			agespeedmult: 0.3795,
 			eggspeed: 0.005556,
@@ -2215,6 +2216,7 @@ var breedingController=angular.module('breedingControllers', []).controller('bre
 
 		creature.minfoodrate=creaturedata.babyfoodrate*$scope.settings.consumptionspeed;
 		creature.maxfoodrate=creature.minfoodrate*creaturedata.babyfoodrate*creaturedata.extrababyfoodrate;
+		creature.adultfoodrate=creature.minfoodrate*creaturedata.extraadultfoodrate;
 		creature.foodratedecay=(creature.maxfoodrate-creature.minfoodrate)/creature.maturationtime;
 
 		$scope.totalfoodcalc();
@@ -2546,6 +2548,7 @@ var breedingController=angular.module('breedingControllers', []).controller('bre
 				newcreature.maturationtimecomplete=newcreature.maturationtime*newcreature.maturation;
 				newcreature.minfoodrate=$scope.creatures[name].babyfoodrate*$scope.settings.consumptionspeed;
 				newcreature.maxfoodrate=newcreature.minfoodrate*$scope.creatures[name].babyfoodrate*$scope.creatures[name].extrababyfoodrate;
+				newcreature.adultfoodrate=newcreature.minfoodrate*$scope.creatures[name].extraadultfoodrate;
 				newcreature.foodratedecay=(newcreature.maxfoodrate-newcreature.minfoodrate)/newcreature.maturationtime;
 				newcreature.foodrate=newcreature.maxfoodrate-newcreature.foodratedecay*newcreature.maturation*newcreature.maturationtime;
 				newcreature.hunger=0;
@@ -2570,12 +2573,23 @@ var breedingController=angular.module('breedingControllers', []).controller('bre
 			time++;
 
 			for (i=0;i<troughcreatures.length;i++) {
-				if (troughcreatures[i].foodrate<troughcreatures[i].minfoodrate) {
-					continue; //Creature is adult
+				troughcreatures[i].maturationtimecomplete += 1;
+
+				if (troughcreatures[i].maturationtimecomplete >= troughcreatures[i].maturationtime) {
+					//Creature is adult
+					troughcreatures[i].maturationtimecomplete = troughcreatures[i].maturationtime;
 				}
 
-				troughcreatures[i].foodrate-=troughcreatures[i].foodratedecay;
-				troughcreatures[i].hunger+=troughcreatures[i].foodrate;
+				troughcreatures[i].maturation = troughcreatures[i].maturationtimecomplete / troughcreatures[i].maturationtime;
+				
+				if (troughcreatures[i].maturation == 1) {
+					troughcreatures[i].foodrate = troughcreatures[i].adultfoodrate;
+				}
+				else {
+					troughcreatures[i].foodrate -= troughcreatures[i].foodratedecay;
+				}
+				
+				troughcreatures[i].hunger += troughcreatures[i].foodrate;
 
 				if (troughcreatures[i].hunger<20) {
 					continue; //Creature cannot possibly eat below this
